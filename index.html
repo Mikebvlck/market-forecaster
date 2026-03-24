@@ -46,8 +46,8 @@
         }
 
         header {
-            height: 64px;
-            padding: 0 24px;
+            height: 56px;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -226,16 +226,17 @@
         .viewport {
             background: #030508;
             position: relative;
-            display: grid;
-            grid-template-rows: 1fr 300px;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
+            flex: 1;
         }
 
         .neural-stage {
-            padding: 40px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 16px;
             overflow-y: auto;
         }
 
@@ -282,7 +283,7 @@
             background: linear-gradient(145deg, #10141d 0%, #05070a 100%);
             border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 32px;
+            padding: 20px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -300,7 +301,8 @@
             background: #000;
             border-top: 1px solid var(--border);
             position: relative;
-            height: 400px;
+            flex: 1;
+            min-height: 350px;
         }
 
         /* --- RESPONSIVE OVERHAUL (v2.4) --- */
@@ -319,12 +321,13 @@
             }
 
             .viewport {
-                grid-template-rows: auto auto;
+                flex: none;
                 height: auto;
             }
 
             .neural-stage {
-                padding: 20px;
+                padding: 16px;
+                gap: 12px;
             }
 
             .strategy-grid {
@@ -333,12 +336,15 @@
 
             .projector-card {
                 flex-direction: column;
-                gap: 20px;
+                gap: 12px;
                 text-align: center;
+                padding: 16px;
             }
 
             .chart-ref {
-                height: 450px;
+                height: 480px;
+                /* On mobile stacking, we use a fixed height since we are scrolling vertically */
+                flex: none;
             }
         }
 
