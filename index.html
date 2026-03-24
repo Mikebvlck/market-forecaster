@@ -300,6 +300,73 @@
             background: #000;
             border-top: 1px solid var(--border);
             position: relative;
+            height: 400px;
+        }
+
+        /* --- RESPONSIVE OVERHAUL (v2.4) --- */
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                height: auto;
+                overflow-y: initial;
+            }
+
+            .viewport {
+                grid-template-rows: auto auto;
+                height: auto;
+            }
+
+            .neural-stage {
+                padding: 20px;
+            }
+
+            .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projector-card {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .chart-ref {
+                height: 450px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 0 16px;
+                height: 60px;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .hero-signal {
+                font-size: 2.2rem;
+            }
+
+            .proj-val {
+                font-size: 2.2rem;
+            }
+
+            .strat-val {
+                font-size: 1.5rem;
+            }
         }
 
         #tv-widget {

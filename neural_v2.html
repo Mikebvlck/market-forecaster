@@ -436,6 +436,78 @@
             stroke-width: 1;
             stroke-dasharray: 2;
         }
+
+        /* --- RESPONSIVE OVERHAUL (v2.4) --- */
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                height: auto;
+                overflow-y: auto;
+            }
+
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                height: 400px;
+            }
+
+            .map-section {
+                height: 500px;
+                order: -1;
+            }
+
+            .path-section {
+                border-left: none;
+                border-top: 1px solid var(--border);
+                height: auto;
+            }
+
+            .map-controls {
+                width: 90%;
+                justify-content: space-around;
+                font-size: 0.65rem;
+                padding: 8px 12px;
+            }
+
+            .intel-card {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 0.9rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .goal-amount {
+                font-size: 1.5rem;
+            }
+
+            .map-controls {
+                bottom: 10px;
+                border-radius: 12px;
+            }
+
+            .map-btn {
+                font-size: 0.6rem;
+                gap: 4px;
+            }
+
+            .scout-hub {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 
