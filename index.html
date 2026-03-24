@@ -305,55 +305,88 @@
             min-height: 350px;
         }
 
-        /* --- RESPONSIVE OVERHAUL (v2.4) --- */
+        /* --- MOBILE OVERLAP FIX (v2.6) --- */
         @media (max-width: 1024px) {
-            main {
-                grid-template-columns: 1fr;
+            header {
                 height: auto;
+                min-height: 60px;
+                padding: 12px 20px;
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            main {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
                 overflow-y: auto;
             }
 
             .sidebar {
+                width: 100%;
                 border-right: none;
-                border-bottom: 1px solid var(--border);
-                height: auto;
-                overflow-y: initial;
+                border-top: 1px solid var(--border);
+                order: 3;
+                flex: none;
+                padding: 16px;
+                background: var(--surface);
             }
 
             .viewport {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                order: 2;
                 flex: none;
-                height: auto;
+                background: var(--bg);
             }
 
             .neural-stage {
                 padding: 16px;
-                gap: 12px;
+                gap: 16px;
+                width: 100%;
+                overflow: visible;
             }
 
             .strategy-grid {
                 grid-template-columns: 1fr;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .strat-card {
+                padding: 20px;
+                width: 100%;
+                flex-shrink: 0;
             }
 
             .projector-card {
                 flex-direction: column;
                 gap: 12px;
                 text-align: center;
-                padding: 16px;
+                padding: 20px;
+                width: 100%;
+                flex-shrink: 0;
             }
 
             .chart-ref {
-                height: 480px;
-                /* On mobile stacking, we use a fixed height since we are scrolling vertically */
+                height: 500px;
+                width: 100%;
                 flex: none;
+                order: 4;
+            }
+
+            .hero-signal {
+                font-size: 2.2rem;
+            }
+
+            .proj-val {
+                font-size: 2.5rem;
             }
         }
 
         @media (max-width: 480px) {
-            header {
-                padding: 0 16px;
-                height: 60px;
-            }
-
             .logo {
                 font-size: 1rem;
             }
@@ -362,16 +395,8 @@
                 display: none;
             }
 
-            .hero-signal {
-                font-size: 2.2rem;
-            }
-
-            .proj-val {
-                font-size: 2.2rem;
-            }
-
-            .strat-val {
-                font-size: 1.5rem;
+            .hub-trigger {
+                padding: 4px 8px;
             }
         }
 
