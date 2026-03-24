@@ -410,6 +410,9 @@
         <div class="dropdown-menu" id="hub-menu">
             <div class="dropdown-item" onclick="openModal('blueprint-modal', 'blueprint')">📑 Strategic Blueprint</div>
             <div class="dropdown-item" onclick="openModal('options-modal')">⚙️ Risk & Regional Settings</div>
+            <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
+            <div class="dropdown-item" onclick="window.location.href='neural_v2.html'"
+                style="color: var(--accent-blue);">🛰️ Neural Matrix V2</div>
         </div>
 
         <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue);">
@@ -449,7 +452,10 @@
                 <select id="tf-select">
                     <option value="1">1 MINUTE</option>
                     <option value="5">5 MINUTES</option>
+                    <option value="15">15 MINUTES</option>
+                    <option value="30">30 MINUTES</option>
                     <option value="60" selected>1 HOUR</option>
+                    <option value="240">4 HOURS</option>
                     <option value="D">1 DAY</option>
                 </select>
                 <button class="btn-neural" id="re-analyze">Refresh Signal</button>
@@ -508,7 +514,7 @@
             USDJPY: { tv: 'FX:USDJPY', binance: 'USDJPY', digits: 3 }
         };
 
-        const tfConfig = { "1": 0.001, "5": 0.002, "60": 0.005, "D": 0.03 };
+        const tfConfig = { "1": 0.0005, "5": 0.001, "15": 0.002, "30": 0.003, "60": 0.005, "240": 0.012, "D": 0.04 };
 
         /* --- UI Controls --- */
         document.getElementById('hub-trigger').addEventListener('click', () => {
