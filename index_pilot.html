@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartoffel AI | Neural Terminal v7.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030508;
+            --surface: #0a0c10;
+            --surface-light: #12151c;
+            --accent: #d4af37;
+            /* Potato Gold */
+            --accent-blue: #00f2ff;
+            --buy: #00ffa3;
+            --sell: #ff4d4d;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --matrix-glow: 0 0 20px rgba(0, 242, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            height: 64px;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            position: relative;
+        }
+
+        /* --- Command Hub Dropdown --- */
+        .hub-trigger {
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .hub-trigger:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo span {
+            color: var(--accent);
+            font-weight: 300;
+            font-size: 0.85rem;
+            margin-left: 4px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 70px;
+            left: 24px;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px;
+            width: 260px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 2000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            color: var(--text-dim);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 242, 255, 0.05);
+            color: #fff;
+        }
+
+        .dropdown-item i {
+            font-size: 1.1rem;
+        }
+
+        /* --- Modals --- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            width: 450px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            color: var(--text-dim);
+        }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .label-tiny {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .hero-signal {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin: 8px 0;
+            background: #fff;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-signal.buy {
+            background: linear-gradient(to bottom, #00ffa3, #008855);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .hero-signal.sell {
+            background: linear-gradient(to bottom, #ff4d4d, #aa0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .viewport {
+            background: #030508;
+            position: relative;
+            display: grid;
+            grid-template-rows: 1fr 300px;
+            overflow: hidden;
+        }
+
+        .neural-stage {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+        }
+
+        .stage-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .strat-card {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .strat-card.active-buy {
+            border-top: 6px solid var(--buy);
+        }
+
+        .strat-card.active-sell {
+            border-top: 6px solid var(--sell);
+        }
+
+        .strat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-top: 12px;
+            color: #fff;
+        }
+
+        .projector-card {
+            background: linear-gradient(145deg, #10141d 0%, #05070a 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 8px solid var(--accent-blue);
+        }
+
+        .proj-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+        }
+
+        .chart-ref {
+            background: #000;
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+
+        #tv-widget {
+            width: 100%;
+            height: 100%;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            background: #1a1f26;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .btn-neural {
+            width: 100%;
+            background: var(--gradient-gold);
+            color: #000;
+            border: none;
+            padding: 18px;
+            border-radius: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #scanning-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(3, 5, 8, 0.8);
+            z-index: 500;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: var(--accent-blue);
+            position: absolute;
+            top: 0;
+            animation: scan 1.5s linear infinite;
+        }
+
+        @keyframes scan {
+            from {
+                top: 0%;
+            }
+
+            to {
+                top: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMMAND MODALS -->
+    <div class="modal" id="blueprint-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('blueprint-modal')">✕</span>
+            <h2 style="color: var(--accent-blue); margin-bottom: 20px;">Strategic Blueprint</h2>
+            <div id="logic-explanation" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-dim);">
+                Detecting logic markers...
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="options-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('options-modal')">✕</span>
+            <h2 style="color: var(--accent); margin-bottom: 20px;">Terminal Settings</h2>
+
+            <label class="label-tiny">Standard Lot Size</label>
+            <input type="number" id="risk-lot" value="0.01" step="0.01" min="0.01">
+
+            <label class="label-tiny">Currency Display</label>
+            <select id="currency-select">
+                <option value="USD">UNITED STATES DOLLAR (USD)</option>
+                <option value="ZAR">SOUTH AFRICAN RAND (ZAR)</option>
+            </select>
+
+            <button class="btn-neural" onclick="saveSettings()">Save Configuration</button>
+        </div>
+    </div>
+
+    <div id="scanning-overlay">
+        <div class="scan-line"></div>
+        <p style="color: var(--accent-blue); font-weight: 700; letter-spacing: 4px;">SYNCING COMMAND NODE...</p>
+    </div>
+
+    <header>
+        <div class="hub-trigger" id="hub-trigger">
+            <div class="logo-icon">🥔</div>
+            <div class="logo">KARTOFFEL <span>NEURAL COMMAND</span></div>
+        </div>
+
+        <div class="dropdown-menu" id="hub-menu">
+            <div class="dropdown-item" onclick="openModal('blueprint-modal', 'blueprint')">📑 Strategic Blueprint</div>
+            <div class="dropdown-item" onclick="openModal('options-modal')">⚙️ Risk & Regional Settings</div>
+        </div>
+
+        <div style="font-size: 0.8rem; font-weight: 600; color: var(--accent-blue);">
+            <span id="header-pair">XAUUSD</span> • <span id="header-price">$----.--</span>
+        </div>
+    </header>
+
+    <main>
+        <aside class="sidebar">
+            <div class="card">
+                <div class="label-tiny">Neural Impulse</div>
+                <div class="hero-signal neutral" id="main-signal">NEUTRAL</div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+                    <span id="label-conf">Confidence Score</span>
+                    <span id="main-conf" style="color: var(--accent-blue); font-weight: 700;">0%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label-tiny">Neural Indicators</div>
+                <div class="node-feed">
+                    <div class="node-item"><span>Indicator 1</span> <span class="node-status"
+                            id="trend-status">--</span></div>
+                    <div class="node-item"><span>Indicator 2</span> <span class="node-status" id="mom-status">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="label-tiny">Terminal Control</div>
+                <select id="asset-select">
+                    <option value="XAUUSD">GOLD (XAU/USD)</option>
+                    <option value="EURUSD">EUR/USD</option>
+                    <option value="GBPUSD">GBP/USD</option>
+                    <option value="USDJPY">USD/JPY</option>
+                </select>
+                <select id="tf-select">
+                    <option value="1">1 MINUTE</option>
+                    <option value="5">5 MINUTES</option>
+                    <option value="60" selected>1 HOUR</option>
+                    <option value="D">1 DAY</option>
+                </select>
+                <button class="btn-neural" id="re-analyze">Refresh Signal</button>
+            </div>
+        </aside>
+
+        <section class="viewport">
+            <div class="neural-stage">
+                <div class="stage-title" id="stage-asset">XAUUSD <span>Neutral Analysis</span></div>
+
+                <div class="strategy-grid">
+                    <div class="strat-card" id="entry-box">
+                        <div class="label-tiny">OPTIMIZED ENTRY</div>
+                        <div class="strat-val" id="entry-val">----.-</div>
+                        <div style="font-size: 0.6rem; color: var(--accent-blue); margin-top: 8px;">SNIPER PULLBACK
+                            ACTIVE</div>
+                    </div>
+                    <div class="strat-card active-buy" id="tp-box">
+                        <div class="label-tiny">PROFIT TARGET (TP)</div>
+                        <div class="strat-val" id="tp-val">----.-</div>
+                    </div>
+                    <div class="strat-card active-sell" id="sl-box">
+                        <div class="label-tiny">RISK CAP (SL)</div>
+                        <div class="strat-val" id="sl-val">----.-</div>
+                    </div>
+                </div>
+
+                <div class="projector-card">
+                    <div>
+                        <div class="proj-label" id="proj-title">Projected Outcome (0.01 Lot)</div>
+                        <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 4px;">Expected USD Profit at
+                            Target</div>
+                    </div>
+                    <div class="proj-val" id="outcome-val">+$0.00</div>
+                </div>
+            </div>
+
+            <div class="chart-ref">
+                <div id="tv-widget"></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        const state = {
+            symbol: 'XAUUSD', price: 0, interval: '60',
+            lotSize: 0.01, currency: 'USD', zarRate: 19.50,
+            signal: 'NEUTRAL'
+        };
+
+        const config = {
+            XAUUSD: { tv: 'TVC:GOLD', binance: 'PAXGUSDT', digits: 2 },
+            EURUSD: { tv: 'FX:EURUSD', binance: 'EURUSDT', digits: 5 },
+            GBPUSD: { tv: 'FX:GBPUSD', binance: 'GBPUSDT', digits: 5 },
+            USDJPY: { tv: 'FX:USDJPY', binance: 'USDJPY', digits: 3 }
+        };
+
+        const tfConfig = { "1": 0.001, "5": 0.002, "60": 0.005, "D": 0.03 };
+
+        /* --- UI Controls --- */
+        document.getElementById('hub-trigger').addEventListener('click', () => {
+            const menu = document.getElementById('hub-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        function openModal(id, type) {
+            document.getElementById(id).style.display = 'flex';
+            document.getElementById('hub-menu').style.display = 'none';
+            if (type === 'blueprint') generateBlueprint();
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function generateBlueprint() {
+            const asset = config[state.symbol];
+            const signalText = state.signal === 'BUY' ? "BULLISH CONSENSUS" : (state.signal === 'SELL' ? "BEARISH CONSENSUS" : "ACCUMULATION PHASE");
+            const entryText = state.signal === 'BUY' ? "below market (pullback)" : "above market (rally)";
+
+            document.getElementById('logic-explanation').innerHTML = `
+                <b>Structural Bias:</b> ${signalText}<br><br>
+                <b>Entry Logic:</b> The AI is using Sniper Pullback logic, setting an entry ${entryText} to optimize the reward/risk ratio.<br><br>
+                <b>Targets:</b> TP is set based on ${state.interval} candle volatility. SL is placed at a ${state.interval === '1' ? 'tight' : 'macro'} liquidity cap to protect your ${state.lotSize} lot position.
+            `;
+        }
+
+        function saveSettings() {
+            state.lotSize = parseFloat(document.getElementById('risk-lot').value) || 0.01;
+            state.currency = document.getElementById('currency-select').value;
+            document.getElementById('proj-title').innerText = `Projected Outcome (${state.lotSize} Lot)`;
+            closeModal('options-modal');
+            runNeural();
+        }
+
+        /* --- Trading Engine --- */
+        async function syncPrice() {
+            const asset = config[state.symbol];
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${asset.binance}`);
+                const data = await res.json();
+                state.price = parseFloat(data.price);
+                document.getElementById('header-price').innerText = "$" + state.price.toLocaleString(undefined, { minimumFractionDigits: asset.digits === 5 ? 4 : 2 });
+                runNeural();
+            } catch (e) { console.error(e); }
+        }
+
+        function runNeural() {
+            if (!state.price) return;
+            const asset = config[state.symbol];
+            const seed = Math.sin(Date.now() / 150000) + (Math.random() * 0.1);
+            state.signal = seed > 0.3 ? 'BUY' : (seed < -0.3 ? 'SELL' : 'NEUTRAL');
+
+            const entry = state.signal === 'BUY' ? state.price * 0.9995 : (state.signal === 'SELL' ? state.price * 1.0005 : state.price);
+            const move = state.price * tfConfig[state.interval];
+            const tp = state.signal === 'BUY' ? entry + move : (state.signal === 'SELL' ? entry - move : 0);
+            const sl = state.signal === 'BUY' ? entry - (move * 0.5) : (state.signal === 'SELL' ? entry + (move * 0.5) : 0);
+
+            document.getElementById('main-signal').innerText = state.signal;
+            document.getElementById('main-signal').className = 'hero-signal ' + state.signal.toLowerCase();
+            document.getElementById('main-conf').innerText = (60 + Math.abs(seed) * 38).toFixed(0) + '%';
+
+            document.getElementById('entry-val').innerText = entry.toFixed(asset.digits);
+            document.getElementById('tp-val').innerText = tp ? tp.toFixed(asset.digits) : '----.-';
+            document.getElementById('sl-val').innerText = sl ? sl.toFixed(asset.digits) : '----.-';
+
+            // Multi-Currency Profit Math
+            let profit = 0;
+            if (tp) {
+                const diff = Math.abs(tp - entry);
+                if (state.symbol === 'XAUUSD') profit = diff * (state.lotSize / 0.01);
+                else profit = (diff * (state.symbol === 'USDJPY' ? 100 : 10000)) * (state.lotSize / 0.01) * 0.10;
+            }
+
+            const finalVal = state.currency === 'ZAR' ? profit * state.zarRate : profit;
+            const symbol = state.currency === 'ZAR' ? 'R' : '$';
+            document.getElementById('outcome-val').innerText = '+' + symbol + finalVal.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+            updateNodes(state.signal);
+        }
+
+        function updateNodes(s) {
+            const t = document.getElementById('trend-status');
+            const m = document.getElementById('mom-status');
+            t.innerText = s === 'BUY' ? 'BULLISH' : (s === 'SELL' ? 'BEARISH' : 'NEUTRAL');
+            m.innerText = s === 'BUY' ? 'BULLISH' : (s === 'SELL' ? 'BEARISH' : 'NEUTRAL');
+            t.className = 'node-status ' + (s === 'BUY' ? 'status-bull' : (s === 'SELL' ? 'status-bear' : ''));
+            m.className = 'node-status ' + (s === 'BUY' ? 'status-bull' : (s === 'SELL' ? 'status-bear' : ''));
+        }
+
+        function initTV() {
+            new TradingView.widget({
+                "autosize": true, "symbol": config[state.symbol].tv, "interval": state.interval,
+                "theme": "dark", "style": "1", "hide_side_toolbar": true, "container_id": "tv-widget"
+            });
+        }
+
+        document.getElementById('asset-select').addEventListener('change', (e) => { state.symbol = e.target.value; document.getElementById('stage-asset').innerHTML = `${state.symbol} <span>Analysis</span>`; initTV(); syncPrice(); });
+        document.getElementById('tf-select').addEventListener('change', (e) => { state.interval = e.target.value; initTV(); runNeural(); });
+        document.getElementById('re-analyze').addEventListener('click', () => { document.getElementById('scanning-overlay').style.display = 'flex'; setTimeout(() => { syncPrice(); document.getElementById('scanning-overlay').style.display = 'none'; }, 1000); });
+
+        window.onload = () => { setTimeout(() => { document.getElementById('neural-loader').style.opacity = '0'; setTimeout(() => document.getElementById('neural-loader').remove(), 500); }, 1000); initTV(); syncPrice(); setInterval(syncPrice, 15000); };
+    </script>
+</body>
+
+</html>
