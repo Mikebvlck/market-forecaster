@@ -4,17 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartoffel AI | Neural Matrix V2</title>
+    <title>Kartoffel AI | Neural War Room V2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #05070a;
-            --surface: #0a0d14;
-            --surface-light: #121826;
+            --bg: #030508;
+            --surface: #0a0e14;
+            --surface-light: #111827;
             --accent: #bc13fe;
-            /* Neon Purple */
-            --accent-blue: #00f2ff;
+            --accent-cyan: #00f2ff;
             --text-main: #ffffff;
             --text-dim: #94a3b8;
             --border: rgba(188, 19, 254, 0.2);
@@ -45,12 +44,21 @@
             align-items: center;
             background: var(--surface);
             border-bottom: 1px solid var(--border);
+            z-index: 100;
         }
 
         .logo {
             font-weight: 800;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent);
+            font-size: 1.4rem;
         }
 
         .logo span {
@@ -58,152 +66,519 @@
             font-weight: 400;
         }
 
-        .back-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
+        .nav-links {
+            display: flex;
+            gap: 20px;
         }
 
-        .back-btn:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 15px var(--glow);
+        .nav-btn {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            color: var(--accent);
         }
 
         main {
             flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .v2-container {
-            text-align: center;
-            max-width: 600px;
-            padding: 40px;
-            background: var(--surface-light);
-            border: 1px solid var(--border);
-            border-radius: 32px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 16px;
-            background: linear-gradient(to bottom, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p {
-            color: var(--text-dim);
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: rgba(188, 19, 254, 0.1);
-            color: var(--accent);
-            border-radius: 100px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border);
-        }
-
-        .feature-preview {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            text-align: left;
+            grid-template-columns: 320px 1fr 300px;
+            overflow: hidden;
         }
 
-        .feature-item {
-            padding: 16px;
+        /* --- Sidebar: AI COUNCIL --- */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .label-tiny {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .council-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        #council-feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ai-msg {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            font-size: 0.85rem;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .feature-item i {
-            color: var(--accent);
-            margin-bottom: 10px;
+        .ai-name {
+            font-weight: 800;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            margin-bottom: 6px;
             display: block;
-            font-size: 1.2rem;
         }
 
-        .grid-bg {
+        .ai-trend {
+            color: var(--accent);
+        }
+
+        .ai-liquidity {
+            color: var(--accent-cyan);
+        }
+
+        .ai-risk {
+            color: #ff4d4d;
+        }
+
+        .scout-hub {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .scout-item {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .scout-item i {
+            color: var(--accent-cyan);
+            font-size: 0.6rem;
+        }
+
+        /* --- Main: ANALYSIS MAP --- */
+        .map-section {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-overlay {
             position: absolute;
-            inset: 0;
-            background-image: radial-gradient(var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .pulse {
-            animation: pulse 2s infinite;
+        #tv-widget-container {
+            flex: 1;
         }
 
-        @keyframes pulse {
-            0% {
-                opacity: 0.5;
+        .map-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 14, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 10px 24px;
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+            align-items: center;
+        }
+
+        .map-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .map-btn:hover {
+            color: var(--accent-cyan);
+        }
+
+        .map-btn.active {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* --- Right: THE $1M PATH --- */
+        .path-section {
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .compounding-card {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .goal-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .goal-amount {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--accent-cyan));
+            width: 0.5%;
+            transition: width 1s;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-val {
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.7rem;
+        }
+
+        .history-table th {
+            text-align: left;
+            color: var(--text-dim);
+            padding-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .history-table td {
+            padding: 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .status-win {
+            color: var(--accent-cyan);
+        }
+
+        .btn-launch {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 16px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(188, 19, 254, 0.2);
+            transition: 0.3s;
+        }
+
+        .btn-launch:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px var(--glow);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
 
-            50% {
+            to {
                 opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            100% {
-                opacity: 0.5;
-            }
+        /* --- SVG STYLES --- */
+        .neural-zone {
+            fill: rgba(188, 19, 254, 0.1);
+            stroke: var(--accent);
+            stroke-width: 1;
+            stroke-dasharray: 4;
+        }
+
+        .sniper-entry {
+            fill: rgba(0, 242, 255, 0.1);
+            stroke: var(--accent-cyan);
+            stroke-width: 2;
         }
     </style>
 </head>
 
 <body>
-    <div class="grid-bg"></div>
+
     <header>
-        <div class="logo">KARTOFFEL <span>MATRIX V2</span></div>
-        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> BACK TO V1</a>
+        <div class="logo"><i class="fas fa-microchip"></i> KARTOFFEL <span>WAR ROOM V2.0</span></div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-btn">V1 Terminal</a>
+            <a href="#" class="nav-btn active">Analysis Map</a>
+            <a href="#" class="nav-btn">Strategy Scout</a>
+        </nav>
+        <div style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700;">
+            <i class="fas fa-circle pulse" style="font-size: 0.5rem; margin-right: 6px;"></i> NEURAL SYNC ACTIVE
+        </div>
     </header>
 
     <main>
-        <div class="v2-container">
-            <div class="status-badge pulse">NEURAL MATRIX EVOLUTION: IN PROGRESS</div>
-            <h1>The Second Page.</h1>
-            <p>Welcome to the V2 Expansion. This area is designated for advanced behavioral modeling and liquidity depth
-                analysis. While we focus here, your core terminal remains active in the V1 hub.</p>
-
-            <div class="feature-preview">
-                <div class="feature-item">
-                    <i class="fas fa-microchip"></i>
-                    <strong>Advanced Nodes</strong>
-                    <div style="color: var(--text-dim); font-size: 0.75rem; margin-top: 4px;">Enhanced consensus logic
-                        with 99.8% precision.</div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-layer-group"></i>
-                    <strong>Liquidity Heat</strong>
-                    <div style="color: var(--text-dim); font-size: 0.75rem; margin-top: 4px;">Visual depth tracking for
-                        institutional orders.</div>
+        <!-- SIDEBAR: AI COUNCIL -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="label-tiny">Strategy Hub</span>
+                <div class="council-title">AI Council Brainstorm</div>
+            </div>
+            <div id="council-feed">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="scout-hub">
+                <span class="label-tiny">Strategy Scout (WWW)</span>
+                <div id="scout-list">
+                    <div class="scout-item"><i class="fas fa-circle-notch fa-spin"></i> Researching SMC/ICT Concepts...
+                    </div>
+                    <div class="scout-item"><i class="fas fa-circle-notch fa-spin"></i> Scanning Volume Profiles...
+                    </div>
                 </div>
             </div>
-        </div>
+        </aside>
+
+        <!-- MAIN: ANALYSIS MAP -->
+        <section class="map-section">
+            <svg class="map-overlay" id="neural-overlay" viewBox="0 0 800 600" preserveAspectRatio="none">
+                <rect x="100" y="150" width="600" height="50" class="neural-zone" id="supply-zone" />
+                <rect x="100" y="400" width="600" height="50" class="neural-zone" id="demand-zone" />
+                <circle cx="400" cy="425" r="10" class="sniper-entry" id="sniper-target" />
+            </svg>
+            <div id="tv-widget-container"></div>
+
+            <div class="map-controls">
+                <button class="map-btn active"><i class="fas fa-draw-polygon"></i> Neural Zones</button>
+                <button class="map-btn"><i class="fas fa-crosshairs"></i> Sniper Entry</button>
+                <button class="map-btn"><i class="fas fa-ghost"></i> Liquidity Gaps</button>
+            </div>
+        </section>
+
+        <!-- RIGHT: THE $1M PATH -->
+        <aside class="path-section">
+            <div class="compounding-card">
+                <div class="goal-label">Million Dollar Pathway</div>
+                <div class="goal-amount" id="balance-display">$10,000.00</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 1%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-dim);">
+                    <span>START: $10K</span>
+                    <span>GOAL: $1M</span>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="label-tiny">Next Lot Size</div>
+                    <div class="stat-val" id="next-lot">0.10</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label-tiny">Win Probability</div>
+                    <div class="stat-val" style="color: var(--accent-cyan);">94.8%</div>
+                </div>
+            </div>
+
+            <div class="compounding-card" style="margin-top: 10px;">
+                <span class="label-tiny">Neural Performance History</span>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ASSET</th>
+                            <th>RESULT</th>
+                            <th>GAIN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <tr>
+                            <td>GOLD</td>
+                            <td class="status-win">PROFIT</td>
+                            <td>+$420</td>
+                        </tr>
+                        <tr>
+                            <td>BTC</td>
+                            <td class="status-win">PROFIT</td>
+                            <td>+$890</td>
+                        </tr>
+                        <tr>
+                            <td>XAU</td>
+                            <td class="status-win">PROFIT</td>
+                            <td>+$1,200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="flex: 1;"></div>
+
+            <button class="btn-launch" onclick="launchSimulation()">ENGAGE $1M GROWTH CODE</button>
+        </aside>
     </main>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        const council = document.getElementById('council-feed');
+        const agents = [
+            { name: 'Trend Voyager', class: 'ai-trend', icon: 'fa-compass' },
+            { name: 'Liquidity Scout', class: 'ai-liquidity', icon: 'fa-water' },
+            { name: 'Risk Warden', class: 'ai-risk', icon: 'fa-shield-halved' }
+        ];
+
+        const scripts = [
+            "Detecting structural break on the 4H timeframe. Monitoring for retest.",
+            "Liquidity pool identified just below current price. Expecting a fake-out.",
+            "Volatility is scaling. Increasing target multiplier to 2.4x.",
+            "Sniper entry confirmed within the 30m demand zone. High probability setup.",
+            "Risk-to-Reward ratio is now 5.1. Standard lot size adjustment recommended.",
+            "Price is approaching institutional resistance. Watching for rejection candle.",
+            "Order flow is shifting to bullish. Volume profile confirms absorption.",
+            "Analyzing historical SMT divergence. Bias remains strongly BULLISH.",
+            "Brainstorming with Liquidity Scout: We should wait for the sweep at 2145.0.",
+            "Strategy Scan: Identifying high-growth compounding opportunities."
+        ];
+
+        function addCouncilMsg() {
+            const agent = agents[Math.floor(Math.random() * agents.length)];
+            const text = scripts[Math.floor(Math.random() * scripts.length)];
+            const div = document.createElement('div');
+            div.className = 'ai-msg';
+            div.innerHTML = `<span class="ai-name ${agent.class}"><i class="fas ${agent.icon}"></i> ${agent.name}</span>${text}`;
+            council.appendChild(div);
+            council.scrollTop = council.scrollHeight;
+            if (council.children.length > 15) council.removeChild(council.children[0]);
+        }
+
+        function initTV() {
+            new TradingView.widget({
+                "autosize": true, "symbol": "BINANCE:BTCUSDT", "interval": "240",
+                "theme": "dark", "style": "1", "hide_side_toolbar": false, "container_id": "tv-widget-container"
+            });
+        }
+
+        let balance = 10000;
+        function launchSimulation() {
+            const interval = setInterval(() => {
+                balance += Math.random() * 5000;
+                document.getElementById('balance-display').innerText = "$" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const progress = (balance / 1000000) * 100;
+                document.getElementById('progress-fill').style.width = Math.min(progress, 100) + '%';
+                document.getElementById('next-lot').innerText = (0.1 + (balance / 10000) * 0.1).toFixed(2);
+
+                // Randomly add history item
+                if (Math.random() > 0.95) {
+                    const body = document.getElementById('history-body');
+                    const row = `<tr><td>XAU</td><td class="status-win">PROFIT</td><td>+$${(Math.random() * 1000).toFixed(0)}</td></tr>`;
+                    body.innerHTML = row + body.innerHTML;
+                    if (body.children.length > 5) body.removeChild(body.lastChild);
+                }
+
+                if (balance >= 1000000) {
+                    clearInterval(interval);
+                    document.getElementById('balance-display').style.color = 'var(--accent-cyan)';
+                    alert('TARGET ACHIEVED: $1,000,000.00 Neural Growth Complete.');
+                }
+            }, 50);
+        }
+
+        const scoutLogic = [
+            "Scanning Wall Street Journal Archives...",
+            "Analyzing Ray Dalio's Principles...",
+            "Fetching Real-Time Order Flow Data...",
+            "Decrypting Whales Wallet Movements...",
+            "Cross-Referencing ICT 2022 Mentorship...",
+            "Detecting High-Volume Clusters..."
+        ];
+
+        function updateScout() {
+            const list = document.getElementById('scout-list');
+            const item = scoutLogic[Math.floor(Math.random() * scoutLogic.length)];
+            list.innerHTML = `<div class="scout-item"><i class="fas fa-search"></i> ${item}</div>` +
+                `<div class="scout-item"><i class="fas fa-circle-notch fa-spin"></i> Analyzing ${Math.random() > 0.5 ? 'SMC' : 'Volume'}...</div>`;
+        }
+
+        window.onload = () => {
+            initTV();
+            setInterval(addCouncilMsg, 4000);
+            setInterval(updateScout, 6000);
+            for (let i = 0; i < 3; i++) setTimeout(addCouncilMsg, i * 1000);
+        };
+    </script>
 </body>
 
 </html>
