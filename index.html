@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Kartoffel AI | Neural Terminal v7.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,6 +112,16 @@
             z-index: 2000;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .hub-toggle-mobile {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 8px;
         }
 
         .dropdown-item {
@@ -398,6 +408,18 @@
             .hub-trigger {
                 padding: 4px 8px;
             }
+
+            .hub-toggle-mobile {
+                display: block;
+                order: 10;
+            }
+
+            .dropdown-menu {
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 40px);
+                top: 65px;
+            }
         }
 
         #tv-widget {
@@ -500,10 +522,12 @@
     </div>
 
     <header>
-        <div class="hub-trigger" id="hub-trigger">
+        <div class="hub-trigger" onclick="toggleHub()">
             <div class="logo-icon">🥔</div>
-            <div class="logo">KARTOFFEL <span>NEURAL COMMAND</span></div>
+            <div class="logo">KARTOFFEL <span>Neural Command</span></div>
         </div>
+
+        <i class="fas fa-bars hub-toggle-mobile" onclick="toggleHub()"></i>
 
         <div class="dropdown-menu" id="hub-menu">
             <div class="dropdown-item" onclick="openModal('blueprint-modal', 'blueprint')">📑 Strategic Blueprint</div>
