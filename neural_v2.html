@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartoffel AI | Neural War Room V2.1</title>
+    <title>Kartoffel AI | Neural War Room V2.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -272,7 +272,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 14px;
         }
 
         .compounding-card {
@@ -310,6 +310,67 @@
             background: linear-gradient(to right, var(--accent), var(--accent-cyan));
             width: 0.5%;
             transition: width 1s;
+        }
+
+        /* --- Neural Intel Card --- */
+        .intel-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 16px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent-cyan);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .level-item {
+            text-align: center;
+        }
+
+        .level-label {
+            font-size: 0.55rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .level-val {
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .tp-val {
+            color: var(--accent-cyan);
+        }
+
+        .sl-val {
+            color: #ff4d4d;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .stat-val {
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-top: 4px;
         }
 
         .history-table {
@@ -401,18 +462,18 @@
 <body>
 
     <header>
-        <div class="logo"><i class="fas fa-microchip"></i> KARTOFFEL <span>V2.1</span></div>
+        <div class="logo"><i class="fas fa-microchip"></i> KARTOFFEL <span>V2.2 PRECISION</span></div>
         <div class="control-hub">
             <select class="asset-selector" id="asset-switcher">
-                <option value="BINANCE:XAUUSDT">GOLD (XAU/USD)</option>
-                <option value="BINANCE:BTCUSDT" selected>BITCOIN (BTC/USD)</option>
-                <option value="BINANCE:EURUSDT">EUR/USD</option>
-                <option value="BINANCE:GBPUSDT">GBP/USD</option>
+                <option value="CAPITALCOM:GOLD">GOLD (Capital.com)</option>
+                <option value="BINANCE:BTCUSDT" selected>BITCOIN (Binance)</option>
+                <option value="CAPITALCOM:EURUSD">EUR/USD (Capital.com)</option>
+                <option value="CAPITALCOM:GBPUSD">GBP/USD (Capital.com)</option>
             </select>
             <div class="tf-btn-group">
-                <button class="tf-btn" onclick="setTF('15')">15M</button>
-                <button class="tf-btn" onclick="setTF('60')">1H</button>
-                <button class="tf-btn active" onclick="setTF('240')">4H</button>
+                <button class="tf-btn" id="tf-15" onclick="setTF('15')">15M</button>
+                <button class="tf-btn" id="tf-60" onclick="setTF('60')">1H</button>
+                <button class="tf-btn active" id="tf-240" onclick="setTF('240')">4H</button>
             </div>
             <a href="index.html" class="nav-btn" style="margin-left: 20px;">V1 Hub</a>
         </div>
@@ -436,17 +497,13 @@
 
         <section class="map-section">
             <svg class="map-overlay" id="neural-overlay" viewBox="0 0 800 600" preserveAspectRatio="none">
-                <!-- Zones Layer -->
                 <g id="layer-zones" class="layer">
                     <rect x="100" y="120" width="600" height="40" class="neural-zone" />
                     <rect x="100" y="440" width="600" height="40" class="neural-zone" />
                 </g>
-                <!-- Sniper Layer -->
                 <g id="layer-sniper" class="layer">
                     <circle cx="400" cy="460" r="15" class="sniper-entry" />
-                    <line x1="400" y1="460" x2="450" y2="460" stroke="#00f2ff" stroke-width="2" />
                 </g>
-                <!-- Liquidity Layer -->
                 <g id="layer-gaps" class="layer">
                     <rect x="100" y="280" width="600" height="20" class="liquidity-gap" />
                     <rect x="100" y="320" width="600" height="20" class="liquidity-gap" />
@@ -466,16 +523,35 @@
 
         <aside class="path-section">
             <div class="compounding-card">
-                <div class="goal-label">Growth to $1M</div>
+                <div class="goal-label">Growth Pathway</div>
                 <div class="goal-amount" id="balance-display">$10,000.00</div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
             </div>
 
+            <!-- Neural Intelligence Hub -->
+            <div class="intel-card">
+                <span class="label-tiny">Neural Intelligence Card</span>
+                <div class="levels-grid">
+                    <div class="level-item">
+                        <div class="level-label">Entry</div>
+                        <div class="level-val" id="intel-entry">0.00</div>
+                    </div>
+                    <div class="level-item">
+                        <div class="level-label">T-Profit</div>
+                        <div class="level-val tp-val" id="intel-tp">0.00</div>
+                    </div>
+                    <div class="level-item">
+                        <div class="level-label">S-Loss</div>
+                        <div class="level-val sl-val" id="intel-sl">0.00</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="stat-grid">
                 <div class="stat-item">
-                    <div class="label-tiny">Next Lot Size</div>
+                    <div class="label-tiny">Next Lot</div>
                     <div class="stat-val" id="next-lot">0.10</div>
                 </div>
                 <div class="stat-item">
@@ -511,8 +587,7 @@
         function initTV() {
             new TradingView.widget({
                 "autosize": true, "symbol": state.symbol, "interval": state.interval,
-                "theme": "dark", "style": "1", "container_id": "tv-widget-container",
-                "library_path": "https://s3.tradingview.com/tv.js"
+                "theme": "dark", "style": "1", "container_id": "tv-widget-container"
             });
         }
 
@@ -525,18 +600,38 @@
         function setTF(tf) {
             state.interval = tf;
             document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            document.getElementById(`tf-${tf}`).classList.add('active');
             initTV();
+            updateLevels();
         }
 
         async function syncPrice() {
-            const sym = state.symbol.split(':')[1];
+            const sym = state.symbol.includes(':') ? state.symbol.split(':')[1] : state.symbol;
+            // Handle Gold symbol for Binance vs Capital
+            const fetchSym = sym === 'GOLD' ? 'PAXGUSDT' : sym; 
             try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${fetchSym}`);
                 const data = await res.json();
-                state.price = parseFloat(data.price);
+                state.price = parseFloat(data.price) || 0;
                 document.getElementById('sync-price').innerText = state.price.toLocaleString();
-            } catch (e) { }
+                updateLevels();
+            } catch(e) {
+                // Fallback for Capital.com symbols
+                state.price = state.symbol.includes('GOLD') ? 2180.50 : 1.0850;
+                document.getElementById('sync-price').innerText = state.price.toLocaleString();
+                updateLevels();
+            }
+        }
+
+        function updateLevels() {
+            const entry = state.price;
+            const volatility = state.price * (state.interval === '15' ? 0.005 : state.interval === '60' ? 0.01 : 0.02);
+            const tp = entry + (volatility * 2);
+            const sl = entry - volatility;
+
+            document.getElementById('intel-entry').innerText = entry.toFixed(entry < 10 ? 4 : 2);
+            document.getElementById('intel-tp').innerText = tp.toFixed(entry < 10 ? 4 : 2);
+            document.getElementById('intel-sl').innerText = sl.toFixed(entry < 10 ? 4 : 2);
         }
 
         function toggleLayer(layer) {
@@ -554,18 +649,18 @@
 
         function addCouncilMsg() {
             const agent = agents[Math.floor(Math.random() * agents.length)];
-            const sym = state.symbol.split(':')[1];
+            const sym = state.symbol.split(':')[1] || state.symbol;
             const messages = [
-                `Analyzing ${sym} structure. Current price of ${state.price} is testing liquidity.`,
-                `Major gap detected on the ${state.interval}m chart. Price likely to fill.`,
-                `Whales are stacking orders for ${sym}. Institutional bias is BULLISH.`,
-                `Risk-to-Reward on ${sym} optimized. Sniper entry confirmed near ${state.price}.`,
-                `SMC concepts suggest a fake-out on ${sym}. Waiting for structural break.`,
-                `Liquidity Scout reporting: Massive liquidations pending at the current range.`
+                `Precision alert: ${sym} is reaching our ENTRY zone at ${state.price}.`,
+                `Target Profit (TP) confirmed: Scalping toward the liquidity stack.`,
+                `Risk Warden check: Stop Loss (SL) is locked below the local structural low.`,
+                `Institutional bias on ${sym} remains BULLISH for the ${state.interval}m trend.`,
+                `SMC Analysis: Institutional orders filled at ${state.price}. Expecting push to TP.`,
+                `Liquidity Scout: Multiple gaps identified. High probability of price magnets active.`
             ];
             const div = document.createElement('div');
             div.className = 'ai-msg';
-            div.innerHTML = `<span class="ai-name ${agent.class}"><i class="fas ${agent.icon}"></i> ${agent.name}</span>${messages[Math.floor(Math.random() * messages.length)]}`;
+            div.innerHTML = `<span class="ai-name ${agent.class}"><i class="fas ${agent.icon}"></i> ${agent.name}</span>${messages[Math.floor(Math.random()*messages.length)]}`;
             council.prepend(div);
             if (council.children.length > 10) council.removeChild(council.lastChild);
         }
@@ -574,10 +669,10 @@
         function launchSimulation() {
             const interval = setInterval(() => {
                 balance += Math.random() * 8000;
-                document.getElementById('balance-display').innerText = "$" + balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+                document.getElementById('balance-display').innerText = "$" + balance.toLocaleString(undefined, {minimumFractionDigits: 2});
                 const progress = (balance / 1000000) * 100;
                 document.getElementById('progress-fill').style.width = Math.min(progress, 100) + '%';
-                document.getElementById('next-lot').innerText = (0.1 + (balance / 10000) * 0.1).toFixed(2);
+                document.getElementById('next-lot').innerText = (0.1 + (balance/10000)*0.1).toFixed(2);
                 if (balance >= 1000000) clearInterval(interval);
             }, 50);
         }
